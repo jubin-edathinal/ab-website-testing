@@ -42,12 +42,13 @@
             if (!storedVariant) {
                 let storedVariant = pickVariation();
                 localStorage.setItem("ab_test_variant", storedVariant);
-                
-                // Track the assigned variant in Google Analytics
-                gtag('event', 'A_B_Test_Assignment', {
-                  'event_category': 'A_B_Website_Testing',
-                  'event_label': storedVariant
-                });
+
+                // Track the variation in Google Analytics
+                  gtag('event', 'A_B_Test_Assignment', {
+                    'event_category': 'A/B Test',
+                    'event_label': 'Variant ' + storedVariant
+                  });
+                  console.log('User assigned to Variation:', storedVariant);
             }
 
             // Redirect the user
