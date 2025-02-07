@@ -5,6 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A/B Testing Redirect Example</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFW7KVK6X2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-GFW7KVK6X2');
+    </script>
+    
     <script>
         (function () {
             // Define the test variations
@@ -31,6 +42,12 @@
             if (!storedVariant) {
                 storedVariant = pickVariation();
                 localStorage.setItem("ab_test_variant", storedVariant);
+                
+                // Track the assigned variant in Google Analytics
+                gtag('event', 'A_B_Test_Assignment', {
+                  'event_category': 'A_B_Testing',
+                  'event_label': storedVariant.name
+                });
             }
 
             // Redirect the user
