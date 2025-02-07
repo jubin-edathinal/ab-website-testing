@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A/B Testing Redirect Example</title>
+    <script>
+        (function () {
+            // Define the test variations
+            var variations = [
+                { url: "https://www.ampdlocal.com/", weight: 50 }, // 50% traffic
+                { url: "https://www.admaxlocal.com/", weight: 50 }  // 50% traffic
+            ];
+
+            // Function to pick a variation based on weights
+            function pickVariation() {
+                var rand = Math.random() * 100;
+                var cumulative = 0;
+                for (var i = 0; i < variations.length; i++) {
+                    cumulative += variations[i].weight;
+                    if (rand < cumulative) {
+                        return variations[i].url;
+                    }
+                }
+                return variations[0].url; // Default fallback
+            }
+
+            // Check if user has already been assigned a variation
+            var storedVariant = localStorage.getItem("ab_test_variant");
+            if (!storedVariant) {
+                storedVariant = pickVariation();
+                localStorage.setItem("ab_test_variant", storedVariant);
+            }
+
+            // Redirect the user
+            if (window.location.href !== storedVariant) {
+                window.location.href = storedVariant;
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <h1>Redirecting you to the best experience...</h1>
+    <p>If you are not redirected automatically, <a href="javascript:window.location.reload()">click here</a>.</p>
+</body>
+
+</html>
