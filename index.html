@@ -40,7 +40,7 @@
             // Check if user has already been assigned a variation
             var storedVariant = localStorage.getItem("ab_test_variant");
             if (!storedVariant) {
-                let storedVariant = pickVariation();
+                storedVariant = pickVariation();
                 localStorage.setItem("ab_test_variant", storedVariant);
 
                 // Track the variation in Google Analytics
