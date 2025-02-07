@@ -31,28 +31,28 @@
                 for (var i = 0; i < variations.length; i++) {
                     cumulative += variations[i].weight;
                     if (rand < cumulative) {
-                        return variations[i];
+                        return variations[i].url;
                     }
                 }
-                return variations[0]; // Default fallback
+                return variations[0].url; // Default fallback
             }
 
             // Check if user has already been assigned a variation
             var storedVariant = localStorage.getItem("ab_test_variant");
             if (!storedVariant) {
-                storedVariant = pickVariation();
+                let storedVariant = pickVariation();
                 localStorage.setItem("ab_test_variant", storedVariant);
                 
                 // Track the assigned variant in Google Analytics
                 gtag('event', 'A_B_Test_Assignment', {
                   'event_category': 'A_B_Website_Testing',
-                  'event_label': storedVariant.name
+                  'event_label': storedVariant
                 });
             }
 
             // Redirect the user
-            if (window.location.href !== storedVariant.url) {
-                window.location.href = storedVariant.url;
+            if (window.location.href !== storedVariant) {
+                window.location.href = storedVariant;
             }
         })();
     </script>
