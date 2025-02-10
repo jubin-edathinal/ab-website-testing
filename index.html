@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,18 +9,17 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFW7KVK6X2"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag(){ dataLayer.push(arguments); }
       gtag('js', new Date());
-    
       gtag('config', 'G-GFW7KVK6X2');
     </script>
-    
+
     <script>
         (function () {
             // Define the test variations
             var variations = [
-                { url: "https://www.ampdlocal.com/", weight: 50, name: "Ampd Local"  }, // 50% traffic
-                { url: "https://www.admaxlocal.com/", weight: 50, name: "AdMax Local"  }  // 50% traffic
+                { url: "https://www.ampdlocal.com/", weight: 50, name: "Ampd Local" },
+                { url: "https://www.admaxlocal.com/", weight: 50, name: "AdMax Local" }
             ];
 
             // Function to pick a variation based on weights
@@ -31,29 +29,35 @@
                 for (var i = 0; i < variations.length; i++) {
                     cumulative += variations[i].weight;
                     if (rand < cumulative) {
-                        return variations[i].url;
+                        return variations[i];
                     }
                 }
-                return variations[0].url; // Default fallback
+                return variations[0]; // Default fallback
             }
 
             // Check if user has already been assigned a variation
             var storedVariant = localStorage.getItem("ab_test_variant");
-            if (!storedVariant) {
-                storedVariant = pickVariation();
-                localStorage.setItem("ab_test_variant", storedVariant);
+            var variantObj;
 
-                // Track the variation in Google Analytics
-                  gtag('event', 'A_B_Test_Assignment', {
-                    'event_category': 'A/B Test',
-                    'event_label': 'Variant ' + storedVariant
-                  });
-                  console.log('User assigned to Variation:', storedVariant);
+            if (storedVariant) {
+                // Parse stored object
+                variantObj = JSON.parse(storedVariant);
+            } else {
+                // Pick new variation
+                variantObj = pickVariation();
+                localStorage.setItem("ab_test_variant", JSON.stringify(variantObj));
             }
 
+            // Track the variation in Google Analytics on every visit
+            gtag('event', 'A_B_Test_Assignment', {
+                'event_category': 'A/B Test',
+                'event_label': variantObj.name
+            });
+            console.log('User assigned to Variation:', variantObj.name);
+
             // Redirect the user
-            if (window.location.href !== storedVariant) {
-                window.location.href = storedVariant;
+            if (window.location.href !== variantObj.url) {
+                window.location.href = variantObj.url;
             }
         })();
     </script>
@@ -63,5 +67,4 @@
     <h1>Redirecting you to the best experience...</h1>
     <p>If you are not redirected automatically, <a href="javascript:window.location.reload()">click here</a>.</p>
 </body>
-
 </html>
