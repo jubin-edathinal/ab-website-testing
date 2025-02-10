@@ -1,51 +1,78 @@
-(function () {
-    // Define the test variations
-    var variations = [
-        { url: "https://www.ampdlocal.com/", weight: 50, name: "Ampd Local" },
-        { url: "https://www.admaxlocal.com/", weight: 50, name: "AdMax Local" }
-    ];
+<!DOCTYPE html>
+<html lang="en">
 
-    // Function to pick a variation based on weights
-    function pickVariation() {
-        var rand = Math.random() * 100;
-        var cumulative = 0;
-        for (var i = 0; i < variations.length; i++) {
-            cumulative += variations[i].weight;
-            if (rand < cumulative) {
-                return variations[i];  // Return full object, not just URL
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A/B Testing Redirect Example</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFW7KVK6X2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-GFW7KVK6X2');
+    </script>
+
+    <script>
+        (function () {
+            // Define the test variations with name and URL
+            var variations = [
+                { url: "https://www.ampdlocal.com/", weight: 50, name: "Ampd Local" },
+                { url: "https://www.admaxlocal.com/", weight: 50, name: "AdMax Local" }
+            ];
+
+            // Function to randomly pick a variation based on weight
+            function pickVariation() {
+                var rand = Math.random() * 100;
+                var cumulative = 0;
+                for (var i = 0; i < variations.length; i++) {
+                    cumulative += variations[i].weight;
+                    if (rand < cumulative) {
+                        return variations[i];  // Return full object (not just URL)
+                    }
+                }
+                return variations[0]; // Default fallback
             }
-        }
-        return variations[0]; // Default fallback
-    }
 
-    // Check if user has already been assigned a variation
-    var storedVariant = localStorage.getItem("ab_test_variant");
-    var variantObj;
+            // Check if user already has an assigned variation
+            var storedVariant = localStorage.getItem("ab_test_variant");
+            var variantObj;
 
-    if (storedVariant) {
-        try {
-            // Parse only if it's a valid JSON object
-            variantObj = JSON.parse(storedVariant);
-        } catch (e) {
-            console.error("Invalid JSON in localStorage, resetting test variant.");
-            variantObj = pickVariation();
-            localStorage.setItem("ab_test_variant", JSON.stringify(variantObj));
-        }
-    } else {
-        // Pick new variation and store it correctly
-        variantObj = pickVariation();
-        localStorage.setItem("ab_test_variant", JSON.stringify(variantObj));
-    }
+            if (storedVariant) {
+                try {
+                    // Parse only if it's a valid JSON object
+                    variantObj = JSON.parse(storedVariant);
+                } catch (e) {
+                    console.error("Invalid JSON in localStorage, resetting test variant.");
+                    variantObj = pickVariation();
+                    localStorage.setItem("ab_test_variant", JSON.stringify(variantObj));
+                }
+            } else {
+                // Pick new variation and store it correctly
+                variantObj = pickVariation();
+                localStorage.setItem("ab_test_variant", JSON.stringify(variantObj));
 
-    // Ensure proper tracking of variant
-    gtag('event', 'A_B_Test_Assignment', {
-        'event_category': 'A/B Test',
-        'event_label': variantObj.name
-    });
-    console.log('User assigned to Variation:', variantObj.name);
+                // Send A/B test assignment event to Google Analytics
+                gtag('event', 'A_B_Test_Assignment', {
+                    'event_category': 'A/B Test',
+                    'event_label': variantObj.name
+                });
+                console.log('User assigned to Variation:', variantObj.name);
+            }
 
-    // Redirect the user
-    if (window.location.href !== variantObj.url) {
-        window.location.href = variantObj.url;
-    }
-})();
+            // Redirect the user if they are not on the assigned variant
+            if (window.location.href !== variantObj.url) {
+                window.location.href = variantObj.url;
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <h1>Redirecting you to the best experience...</h1>
+    <p>If you are not redirected automatically, <a href="javascript:window.location.reload()">click here</a>.</p>
+</body>
+
+</html>
