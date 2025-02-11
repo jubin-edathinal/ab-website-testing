@@ -37,7 +37,7 @@
             }
 
             // Check if user already has an assigned variation
-            var storedVariant = localStorage.getItem("ab_test_variant");
+            var storedVariant = localStorage.getItem("varient");
             var variantObj;
 
             if (storedVariant) {
@@ -47,12 +47,12 @@
                 } catch (e) {
                     console.error("Invalid JSON in localStorage, resetting test variant.");
                     variantObj = pickVariation();
-                    localStorage.setItem("ab_test_variant", JSON.stringify(variantObj));
+                    localStorage.setItem("varient", JSON.stringify(variantObj));
                 }
             } else {
                 // Pick new variation and store it correctly
                 variantObj = pickVariation();
-                localStorage.setItem("ab_test_variant", JSON.stringify(variantObj));
+                localStorage.setItem("varient", JSON.stringify(variantObj));
 
                 // Send A/B test assignment event to Google Analytics
                 // gtag('event', 'A_B_Test_Assignment', {
@@ -60,13 +60,16 @@
                 //     'event_label': variantObj.name
                 // });
                 // Send A/B test assignment event to Google Analytics
-                gtag('event', 'Varient-'+variantObj.name, {
-                    'event_category': 'A/B Test',
-                    'event_label': variantObj.name
-                });
+                //gtag('event', 'Varient-'+variantObj.name, {
+                //    'event_category': 'A/B Test',
+                //    'event_label': variantObj.name
+                //});
                 console.log('User assigned to Variation:', variantObj.name);
             }
-
+             gtag('event', 'Varient-'+variantObj.name, {
+                    'event_category': 'Variations',
+                    'event_label': variantObj.name
+                });
             // Redirect the user if they are not on the assigned variant
             if (window.location.href !== variantObj.url) {
                 window.location.href = variantObj.url;
