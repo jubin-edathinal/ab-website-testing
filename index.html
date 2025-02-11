@@ -55,7 +55,12 @@
                 localStorage.setItem("ab_test_variant", JSON.stringify(variantObj));
 
                 // Send A/B test assignment event to Google Analytics
-                gtag('event', 'A_B_Test_Assignment', {
+                // gtag('event', 'A_B_Test_Assignment', {
+                //     'event_category': 'A/B Test',
+                //     'event_label': variantObj.name
+                // });
+                // Send A/B test assignment event to Google Analytics
+                gtag('event', 'Varient-'+variantObj.name, {
                     'event_category': 'A/B Test',
                     'event_label': variantObj.name
                 });
