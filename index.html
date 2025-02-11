@@ -71,9 +71,14 @@
                     'event_label': variantObj.name
                 });
             // Redirect the user if they are not on the assigned variant
-            if (window.location.href !== variantObj.url) {
+           // if (window.location.href !== variantObj.url) {
+             //   window.location.href = variantObj.url;
+            //}
+
+             setTimeout(function () {
+                console.log("Redirecting to:", variantObj.url);
                 window.location.href = variantObj.url;
-            }
+            }, 3000);
         })();
     </script>
 </head>
